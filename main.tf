@@ -62,7 +62,7 @@ data "aws_iam_policy_document" "bucket_policy" {
     ]
 
     condition {
-      test     = "StringEquals"
+      test     = "IpAddress"
       variable = "aws:SourceIp"
       values   = var.ingress_cidr_blocks
       /*[
@@ -89,7 +89,7 @@ data "aws_iam_policy_document" "bucket_policy" {
     ]
 
     condition {
-      test     = "StringEquals"
+      test     = "IpAddress"
       variable = "aws:SourceIp"
       values   = var.ingress_cidr_blocks
     }
