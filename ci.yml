@@ -1,0 +1,49 @@
+---
+.s3:
+  extends: .base-rules
+  variables:
+    RULES_CHANGES_PATH: "s3/**/*"
+    DIR_PATH: "s3"
+
+code-quality-s3-terraform-lint:
+  extends: [.s3, .terraform_lint]
+
+code-quality-s3-terraform-fmt:
+  extends: [.s3, .terraform_fmt]
+
+code-quality-s3-yaml-lint:
+  extends: [.s3, .yaml_lint]
+
+validate-syntax-s3:
+  extends: [.s3, .validate_syntax]
+
+validate-security-s3:
+  extends: [.s3, .validate_security]
+
+validate-security-checkov-s3:
+  extends: [.s3, .validate_security_checkov]
+
+build-s3:
+  rules:
+    - if: $RULES_CHANGES_PATH != "s3/**/*"
+      when: never
+    - !reference [.base-rules, rules]
+  extends: [.s3, .plan]
+  needs: []
+
+deploy-s3:
+  rules:
+    - if: $RULES_CHANGES_PATH != "s3/**/*"
+      when: never
+    - !reference [.base-rules, rules]
+  extends: [.s3, .apply]
+  needs: ["build-s3"]
+
+destroy-s3:
+  rules:
+    - if: $RULES_CHANGES_PATH != "s3/**/*"
+      when: never
+    - !reference [.destroy, rules]
+    - !reference [.base-rules, rules]
+  extends: [.s3, .destroy]
+  needs: ["build-s3"]
